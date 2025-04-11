@@ -13,6 +13,19 @@ const getAllProduct = async (req, res) => {
   }
 };
 
+const getAllProductSoftDeleted = async (req, res) => {
+  try {
+    const data = await productService.getAllProductSoftDeletedService();
+    return res
+      .status(200)
+      .json(
+        successResponse(data, "Product soft deleted retrieved successfully")
+      );
+  } catch (error) {
+    return res.status(500).json(errorResponse(error.message));
+  }
+};
+
 const getAllProductUser = async (req, res) => {
   const { id } = req.user.id;
   try {
@@ -88,6 +101,23 @@ const updateProduct = async (req, res) => {
   }
 };
 
+const softDeleteProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const data = await productService.softDeleteProductService(id);
+
+    if (!data) {
+      return res.status(404).json(errorResponse(null, "Product not found"));
+    }
+    return res
+      .status(200)
+      .json(successResponse(null, "Product soft deleted successfully"));
+  } catch (error) {
+    return res.status(500).json(errorResponse(error.message));
+  }
+};
+
 const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
@@ -141,6 +171,23 @@ const getProductUser = async (req, res) => {
   }
 };
 
+const restoreProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = await productService.restoreProductService(id);
+
+    if (!data) {
+      return res.status(404).json(errorResponse(null, "Product not found"));
+    }
+
+    return res
+      .status(200)
+      .json(successResponse(data, "Product restored successfully"));
+  } catch (error) {
+    return res.status(500).json(errorResponse(error.message));
+  }
+};
+
 module.exports = {
   getAllProduct,
   getDetailProduct,
@@ -150,4 +197,7 @@ module.exports = {
   getProductByCategory,
   getProductUser,
   getAllProductUser,
+  getAllProductSoftDeleted,
+  softDeleteProduct,
+  restoreProduct,
 };

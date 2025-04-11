@@ -47,6 +47,7 @@ model Product{
   size String
   condition String
   brand String?
+  is_deleted Boolean @default(false)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   user User @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)

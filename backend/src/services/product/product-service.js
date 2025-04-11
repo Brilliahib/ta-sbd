@@ -12,6 +12,37 @@ const disconnectPrisma = async () => {
 const getAllProductService = async () => {
   try {
     const result = await prisma.product.findMany({
+      where: {
+        is_deleted: false,
+      },
+      select: {
+        id: true,
+        image_url: true,
+        name: true,
+        price: true,
+        size: true,
+        condition: true,
+        created_at: true,
+        user: {
+          select: {
+            name: true,
+            image_url: true,
+          },
+        },
+      },
+    });
+    return result;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+const getAllProductSoftDeletedService = async () => {
+  try {
+    const result = await prisma.product.findMany({
+      where: {
+        is_deleted: true,
+      },
       select: {
         id: true,
         image_url: true,
@@ -219,6 +250,38 @@ const deleteProductService = async (id) => {
   }
 };
 
+const softDeleteProductService = async (id) => {
+  try {
+    const result = await prisma.product.update({
+      where: {
+        id,
+      },
+      data: {
+        is_deleted: true,
+      },
+    });
+    return result;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+const restoreProductService = async (id) => {
+  try {
+    const result = await prisma.product.update({
+      where: {
+        id,
+      },
+      data: {
+        is_deleted: false,
+      },
+    });
+    return result;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
 const getProductByCategoryService = async (categoryId) => {
   try {
     const result = await prisma.product.findMany({
@@ -241,4 +304,7 @@ module.exports = {
   deleteProductService,
   getProductByCategoryService,
   getAllProductUserService,
+  softDeleteProductService,
+  getAllProductSoftDeletedService,
+  restoreProductService,
 };
