@@ -12,11 +12,15 @@ export const approveOrderHandler = async (
   id: string,
   token: string,
 ): Promise<OrderResponse> => {
-  const { data } = await api.put(`/order/confirm/${id}`, null, {
-    headers: {
-      Authorization: `Bearer ${token}`,
+  const { data } = await api.put(
+    `/order/confirm/${id}`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     },
-  });
+  );
 
   return data;
 };

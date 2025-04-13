@@ -5,13 +5,19 @@ import CardSalesProductPending from "@/components/molecules/card/CardSalesProduc
 import { DataTable } from "@/components/molecules/datatable/DataTable";
 import SkeletonCardSalesProductPending from "@/components/molecules/skeleton/SkeletonCardSalesProductPending";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useGetAllHistoryOrder } from "@/http/purchases/get-history-order";
 import { useGetAllRequestPurchases } from "@/http/purchases/get-request-purchase";
 import { useSession } from "next-auth/react";
 
 export default function DashboardSalesWrapper() {
   const { data: session, status } = useSession();
 
-  const { data, isPending } = useGetAllRequestPurchases(
+  const { data: purchase, isPending: purchasePending } =
+    useGetAllRequestPurchases(session?.access_token as string, {
+      enabled: status === "authenticated",
+    });
+
+  const { data, isPending } = useGetAllHistoryOrder(
     session?.access_token as string,
     {
       enabled: status === "authenticated",
@@ -27,13 +33,13 @@ export default function DashboardSalesWrapper() {
         <TabsContent value="request">
           {isPending ? (
             <SkeletonCardSalesProductPending />
-          ) : data?.data.length === 0 ? (
+          ) : purchase?.data.length === 0 ? (
             <p className="text-muted-foreground">
               Tidak ada permintaan penukaran.
             </p>
           ) : (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-4 md:gap-6">
-              {data?.data.map((sales) => (
+              {purchase?.data.map((sales) => (
                 <CardSalesProductPending key={sales.id} data={sales} />
               ))}
             </div>

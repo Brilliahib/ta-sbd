@@ -28,6 +28,28 @@ const getAllOrderService = async (userId) => {
   }
 };
 
+const getHistoryOrderService = async (id) => {
+  try {
+    const result = await prisma.order.findMany({
+      where: {
+        product: {
+          user_id: id,
+        },
+      },
+      include: {
+        product: {
+          include: {
+            category: true,
+          },
+        },
+      },
+    });
+    return result;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
 const getDetailOrderService = async (id) => {
   try {
     const result = await prisma.order.findUnique({
@@ -121,6 +143,7 @@ const getRequestOrderService = async (id) => {
         product: {
           user_id: id,
         },
+        is_paid: false,
       },
       include: {
         product: {
@@ -176,4 +199,5 @@ module.exports = {
   deleteOrderService,
   confirmPaymentOrderService,
   getRequestOrderService,
+  getHistoryOrderService,
 };

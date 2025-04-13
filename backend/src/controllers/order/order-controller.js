@@ -29,6 +29,20 @@ const getRequestOrder = async (req, res) => {
   }
 };
 
+const getHistoryOrder = async (req, res) => {
+  try {
+    const id = req.user.id;
+
+    const data = await orderService.getHistoryOrderService(id);
+
+    return res
+      .status(200)
+      .json(successResponse(data, "History order retrieved successfully"));
+  } catch (error) {
+    return res.status(500).json(errorResponse(error.message));
+  }
+};
+
 const getDetailOrder = async (req, res) => {
   try {
     const { id } = req.params;
@@ -98,4 +112,5 @@ module.exports = {
   confirmOrder,
   deleteOrder,
   getRequestOrder,
+  getHistoryOrder,
 };

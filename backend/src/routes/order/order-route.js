@@ -14,6 +14,8 @@ router.get("/", orderController.getAllOrder);
 
 router.get("/request", orderController.getRequestOrder);
 
+router.get("/history", orderController.getHistoryOrder);
+
 router.post(
   "/",
   upload.single("payment_proof_url"),
