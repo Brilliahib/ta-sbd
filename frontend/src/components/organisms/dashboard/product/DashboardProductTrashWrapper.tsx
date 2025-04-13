@@ -1,38 +1,35 @@
 "use client";
 
-import SoftDeleteProductDialog from "@/components/atoms/alert/AlertSoftDeleteProduct";
-import { productUserColumns } from "@/components/atoms/datacolumn/DataProductUser";
+import RestoreProductDialog from "@/components/atoms/alert/AlertRestoreProduct";
+import { productTrashColumns } from "@/components/atoms/datacolumn/DataProductTrash";
 import { SearchBar } from "@/components/atoms/search/SearchBar";
 import { DataTable } from "@/components/molecules/datatable/DataTable";
 import { Button } from "@/components/ui/button";
-import { useGetAllProductUser } from "@/http/product/get-all-product-user";
-import {
-  softDeleteProductHandler,
-  useSoftDeleteProduct,
-} from "@/http/product/soft-delete-product";
+import { useGetAllProductTrash } from "@/http/product/get-all-product-trash";
+import { useRestoreProduct } from "@/http/product/restore-product";
 import { Product } from "@/types/product/product";
 import { useQueryClient } from "@tanstack/react-query";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Shirt } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export default function DashboardProductWrapper() {
+export default function DashboardProductTrashWrapper() {
   const { data: session, status } = useSession();
   const [searchTerm, setSearchTerm] = useState("");
 
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [openRestoreDialog, setOpenRestoreDialog] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const queryClient = useQueryClient();
 
-  const handleSoftDelete = (data: Product) => {
+  const handleRestoreProduct = (data: Product) => {
     setSelectedProduct(data);
-    setOpenDeleteDialog(true);
+    setOpenRestoreDialog(true);
   };
 
-  const { data, isPending } = useGetAllProductUser(
+  const { data, isPending } = useGetAllProductTrash(
     session?.access_token as string,
     {
       enabled: status === "authenticated",
@@ -43,23 +40,23 @@ export default function DashboardProductWrapper() {
     item.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  const { mutate: softDeleteProductHandler, isPending: isDeletePending } =
-    useSoftDeleteProduct({
+  const { mutate: restoreProductHandler, isPending: isDeletePending } =
+    useRestoreProduct({
       onSuccess: () => {
         setSelectedProduct(null);
-        toast("Produk berhasil dihapus sementara!");
+        toast("Produk berhasil dipulihkan!");
         queryClient.invalidateQueries({
-          queryKey: ["product-user"],
+          queryKey: ["product-trash"],
         });
       },
       onError: () => {
-        toast("Gagal menghapus produk sementara!");
+        toast("Gagal memulihkan produk!");
       },
     });
 
-  const onSubmitSoftDelete = () => {
+  const onSubmitRestore = () => {
     if (selectedProduct?.id) {
-      softDeleteProductHandler(selectedProduct?.id);
+      restoreProductHandler(selectedProduct?.id);
     }
   };
 
@@ -69,13 +66,10 @@ export default function DashboardProductWrapper() {
         <div className="flex flex-wrap items-center justify-between gap-4">
           <SearchBar onSearch={setSearchTerm} />
           <div className="flex flex-wrap items-center gap-2">
-            <Link href="/dashboard/product/trash">
-              <Button
-                variant={"outline"}
-                className="border-destructive text-destructive hover:bg-destructive hover:text-white"
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Sampah
+            <Link href="/dashboard/product">
+              <Button variant={"outline"}>
+                <Shirt className="mr-2 h-4 w-4" />
+                Semua Produk
               </Button>
             </Link>
             <Link href="/dashboard/product/create">
@@ -87,15 +81,15 @@ export default function DashboardProductWrapper() {
           </div>
         </div>
         <DataTable
-          columns={productUserColumns(handleSoftDelete)}
+          columns={productTrashColumns(handleRestoreProduct)}
           isLoading={isPending}
           data={filteredData ?? []}
         />
       </div>
-      <SoftDeleteProductDialog
-        open={openDeleteDialog}
-        setOpen={setOpenDeleteDialog}
-        confirmDelete={onSubmitSoftDelete}
+      <RestoreProductDialog
+        open={openRestoreDialog}
+        setOpen={setOpenRestoreDialog}
+        confirmDelete={onSubmitRestore}
         data={selectedProduct}
         isPending={false}
       />

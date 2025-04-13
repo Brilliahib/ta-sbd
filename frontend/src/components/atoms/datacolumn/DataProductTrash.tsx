@@ -4,12 +4,12 @@ import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import Link from "next/link";
-import { Eye, SquarePen, Trash2 } from "lucide-react";
+import { Eye, RefreshCcw, SquarePen, Trash2 } from "lucide-react";
 import { formatPrice } from "@/utils/format-price";
 import { Product } from "@/types/product/product";
 
-export const productUserColumns = (
-  softDeleteProductHandler: (data: Product) => void,
+export const productTrashColumns = (
+  restoreProductHandler: (data: Product) => void,
 ): ColumnDef<Product>[] => [
   {
     accessorKey: "index",
@@ -85,10 +85,10 @@ export const productUserColumns = (
           </Link>
           <div
             className="flex cursor-pointer items-center text-red-600 hover:text-red-800 hover:underline"
-            onClick={() => softDeleteProductHandler(data)}
+            onClick={() => restoreProductHandler(data)}
           >
-            <Trash2 className="h-4 w-4" />
-            <span className="ml-2">Hapus</span>
+            <RefreshCcw className="h-4 w-4" />
+            <span className="ml-2">Pulihkan</span>
           </div>
         </div>
       );

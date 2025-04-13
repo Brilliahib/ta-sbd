@@ -3,6 +3,7 @@ const { errorResponse } = require("../../utils/meta");
 const prisma = new PrismaClient();
 const cloudinary = require("cloudinary").v2;
 const uploadImageToCloudinary = require("../upload/upload-cloudinary");
+const { get } = require("../../routes/order/order-route");
 
 // Disconnect Prisma client when done
 const disconnectPrisma = async () => {
@@ -51,6 +52,11 @@ const getAllProductSoftDeletedService = async () => {
         size: true,
         condition: true,
         created_at: true,
+        category: {
+          select: {
+            name: true,
+          },
+        },
         user: {
           select: {
             name: true,
@@ -70,6 +76,7 @@ const getAllProductUserService = async (id) => {
     const result = await prisma.product.findMany({
       where: {
         user_id: id,
+        is_deleted: false,
       },
       select: {
         id: true,
