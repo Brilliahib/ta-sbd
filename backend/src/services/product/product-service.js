@@ -206,11 +206,12 @@ const updateProductService = async (data, id, file) => {
       data: {
         category_id: data.category_id,
         name: data.name,
-        price: data.price,
+        price: Number(data.price),
         description: data.description,
         size: data.size,
         condition: data.condition,
         brand: data.brand,
+        image_url: newImageUrl ?? project.image_url,
       },
     });
     return result;
