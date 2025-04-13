@@ -30,7 +30,7 @@ export default function DashboardProductWrapper() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <SearchBar onSearch={setSearchTerm} />
         <Link href="/dashboard/product/create">
-          <Button className="rounded-2xl">
+          <Button>
             <Plus className="mr-2 h-4 w-4" />
             Tambah Produk
           </Button>
