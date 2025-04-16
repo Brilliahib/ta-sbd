@@ -21,31 +21,11 @@ import {
   Shirt,
   ShoppingBag,
   ShoppingCart,
+  Users,
 } from "lucide-react";
 import { Session } from "next-auth";
 import { NavUser } from "./NavUser";
 import Image from "next/image";
-
-const monitoring = [
-  { icon: <House />, name: "Halaman Beranda", href: "/" },
-  { icon: <LayoutDashboard />, name: "Dashboard", href: "/dashboard" },
-  {
-    icon: <Shirt />,
-    name: "Produk",
-    href: "/dashboard/product",
-  },
-  {
-    icon: <ShoppingCart />,
-    name: "Pembelian",
-    href: "/dashboard/purchase",
-  },
-  { icon: <ShoppingBag />, name: "Penjualan", href: "/dashboard/sales" },
-  {
-    icon: <ArrowLeftRight />,
-    name: "Penawaran Produk",
-    href: "/dashboard/exchange",
-  },
-];
 
 interface AppsidebarProps {
   session: Session;
@@ -53,6 +33,57 @@ interface AppsidebarProps {
 
 export function AppSidebar({ session }: AppsidebarProps) {
   const pathname = usePathname();
+
+  const role = session.user.role;
+
+  // role admin
+  const adminMenu = [
+    {
+      icon: <LayoutDashboard />,
+      name: "Dashboard Admin",
+      href: "/dashboard/admin",
+    },
+    {
+      icon: <ShoppingBag />,
+      name: "Kategori Produk",
+      href: "/dashboard/admin/category",
+    },
+    {
+      icon: <Shirt />,
+      name: "Produk",
+      href: "/dashboard/admin/product",
+    },
+    {
+      icon: <Users />,
+      name: "Pengguna",
+      href: "/dashboard/users",
+    },
+  ];
+
+  // role users
+  const userMenu = [
+    { icon: <House />, name: "Halaman Beranda", href: "/" },
+    { icon: <LayoutDashboard />, name: "Dashboard", href: "/dashboard" },
+    {
+      icon: <Shirt />,
+      name: "Produk",
+      href: "/dashboard/product",
+    },
+    {
+      icon: <ShoppingCart />,
+      name: "Pembelian",
+      href: "/dashboard/purchase",
+    },
+    { icon: <ShoppingBag />, name: "Penjualan", href: "/dashboard/sales" },
+    {
+      icon: <ArrowLeftRight />,
+      name: "Penawaran Produk",
+      href: "/dashboard/exchange",
+    },
+  ];
+
+  // select role
+  const menuItems = role === "admin" ? adminMenu : userMenu;
 
   return (
     <Sidebar>
@@ -80,7 +111,7 @@ export function AppSidebar({ session }: AppsidebarProps) {
           <SidebarGroupLabel>Dashboard</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {monitoring.map((item, i) => (
+              {menuItems.map((item, i) => (
                 <SidebarMenuItem key={i}>
                   <SidebarMenuButton
                     asChild

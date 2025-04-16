@@ -105,33 +105,9 @@ const updateUser = async (userId, { data }) => {
 };
 
 // For Admin Roles
-const getAllUsers = async (search = "", page = 1, limit = 12) => {
+const getAllUsers = async () => {
   try {
-    const skip = (page - 1) * limit;
-
     const result = await prisma.user.findMany({
-      where: {
-        OR: [
-          {
-            name: {
-              contains: search,
-              mode: "insensitive",
-            },
-          },
-          {
-            email: {
-              contains: search,
-              mode: "insensitive",
-            },
-          },
-          {
-            username: {
-              contains: search,
-              mode: "insensitive",
-            },
-          },
-        ],
-      },
       select: {
         id: true,
         name: true,
@@ -142,39 +118,12 @@ const getAllUsers = async (search = "", page = 1, limit = 12) => {
         created_at: true,
         updated_at: true,
       },
-      skip,
-      take: limit,
-    });
-
-    const totalCount = await prisma.user.count({
-      where: {
-        OR: [
-          {
-            name: {
-              contains: search,
-              mode: "insensitive",
-            },
-          },
-          {
-            email: {
-              contains: search,
-              mode: "insensitive",
-            },
-          },
-          {
-            username: {
-              contains: search,
-              mode: "insensitive",
-            },
-          },
-        ],
+      orderBy: {
+        created_at: "desc",
       },
     });
 
-    return {
-      data: result,
-      totalCount,
-    };
+    return result;
   } catch (error) {
     throw new Error(error.message);
   }
