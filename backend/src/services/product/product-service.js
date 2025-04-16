@@ -242,7 +242,7 @@ const deleteProductService = async (id) => {
       return result.status(404).json(errorResponse(null, "Product not found"));
     }
 
-    const imageUrl = project.image_url;
+    const imageUrl = product.image_url;
     const publicId = imageUrl.split("/").slice(-2).join("/").split(".")[0];
 
     await cloudinary.uploader.destroy(publicId);

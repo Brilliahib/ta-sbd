@@ -22,6 +22,8 @@ router.use(authMiddleware);
 
 router.get("/users/list", productController.getAllProductUser);
 
+router.delete("/:id", productController.deleteProduct);
+
 router.post("/", upload.single("image_url"), productController.createProduct);
 
 router.put("/:id", upload.single("image_url"), productController.updateProduct);
@@ -29,7 +31,5 @@ router.put("/:id", upload.single("image_url"), productController.updateProduct);
 router.put("/soft-delete/:id", productController.softDeleteProduct);
 
 router.put("/restore/:id", productController.restoreProduct);
-
-router.delete("/:id", productController.deleteProduct);
 
 module.exports = router;

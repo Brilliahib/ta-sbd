@@ -10,6 +10,7 @@ import { Product } from "@/types/product/product";
 
 export const productTrashColumns = (
   restoreProductHandler: (data: Product) => void,
+  hardeleteProductHandler: (data: Product) => void,
 ): ColumnDef<Product>[] => [
   {
     accessorKey: "index",
@@ -84,11 +85,18 @@ export const productTrashColumns = (
             <span className="ml-2">Edit</span>
           </Link>
           <div
-            className="flex cursor-pointer items-center text-red-600 hover:text-red-800 hover:underline"
+            className="flex cursor-pointer items-center text-green-600 hover:text-green-800 hover:underline"
             onClick={() => restoreProductHandler(data)}
           >
             <RefreshCcw className="h-4 w-4" />
             <span className="ml-2">Pulihkan</span>
+          </div>
+          <div
+            className="flex cursor-pointer items-center text-red-600 hover:text-red-800 hover:underline"
+            onClick={() => hardeleteProductHandler(data)}
+          >
+            <Trash2 className="h-4 w-4" />
+            <span className="ml-2">Hapus Permanen</span>
           </div>
         </div>
       );

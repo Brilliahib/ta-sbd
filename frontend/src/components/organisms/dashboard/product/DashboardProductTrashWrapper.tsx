@@ -1,11 +1,13 @@
 "use client";
 
+import HardDeleteProductDialog from "@/components/atoms/alert/AlertHardDeleteProduct";
 import RestoreProductDialog from "@/components/atoms/alert/AlertRestoreProduct";
 import { productTrashColumns } from "@/components/atoms/datacolumn/DataProductTrash";
 import { SearchBar } from "@/components/atoms/search/SearchBar";
 import { DataTable } from "@/components/molecules/datatable/DataTable";
 import { Button } from "@/components/ui/button";
 import { useGetAllProductTrash } from "@/http/product/get-all-product-trash";
+import { useHardDeleteProduct } from "@/http/product/hard-delete-product";
 import { useRestoreProduct } from "@/http/product/restore-product";
 import { Product } from "@/types/product/product";
 import { useQueryClient } from "@tanstack/react-query";
@@ -20,6 +22,7 @@ export default function DashboardProductTrashWrapper() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const [openRestoreDialog, setOpenRestoreDialog] = useState(false);
+  const [openHardDeleteDialog, setOpenHardDeleteDialog] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const queryClient = useQueryClient();
@@ -27,6 +30,11 @@ export default function DashboardProductTrashWrapper() {
   const handleRestoreProduct = (data: Product) => {
     setSelectedProduct(data);
     setOpenRestoreDialog(true);
+  };
+
+  const handleHardDeleteProduct = (data: Product) => {
+    setSelectedProduct(data);
+    setOpenHardDeleteDialog(true);
   };
 
   const { data, isPending } = useGetAllProductTrash(
@@ -60,6 +68,26 @@ export default function DashboardProductTrashWrapper() {
     }
   };
 
+  const { mutate: hardDeleteProductHandler, isPending: hardDeleteIsPending } =
+    useHardDeleteProduct({
+      onSuccess: () => {
+        setSelectedProduct(null);
+        toast("Produk berhasil dihapus permanen!");
+        queryClient.invalidateQueries({
+          queryKey: ["product-trash"],
+        });
+      },
+      onError: () => {
+        toast("Gagal menghapus permanen!");
+      },
+    });
+
+  const onSubmitHardDelete = () => {
+    if (selectedProduct?.id) {
+      hardDeleteProductHandler(selectedProduct?.id);
+    }
+  };
+
   return (
     <>
       <div className="space-y-6">
@@ -81,7 +109,10 @@ export default function DashboardProductTrashWrapper() {
           </div>
         </div>
         <DataTable
-          columns={productTrashColumns(handleRestoreProduct)}
+          columns={productTrashColumns(
+            handleRestoreProduct,
+            handleHardDeleteProduct,
+          )}
           isLoading={isPending}
           data={filteredData ?? []}
         />
@@ -92,6 +123,13 @@ export default function DashboardProductTrashWrapper() {
         confirmDelete={onSubmitRestore}
         data={selectedProduct}
         isPending={false}
+      />
+      <HardDeleteProductDialog
+        open={openHardDeleteDialog}
+        setOpen={setOpenHardDeleteDialog}
+        confirmDelete={onSubmitHardDelete}
+        data={selectedProduct}
+        isPending={hardDeleteIsPending}
       />
     </>
   );
