@@ -13,6 +13,18 @@ const getAllExchange = async (req, res) => {
   }
 };
 
+const getAllExchangeOther = async (req, res) => {
+  try {
+    const id = req.user.id;
+    const data = await exchangeService.getAllExchangeOtherService(id);
+    return res
+      .status(200)
+      .json(successResponse(data, "Exchange retrieved successfully"));
+  } catch (error) {
+    return res.status(500).json(errorResponse(error.message));
+  }
+};
+
 const getAllRequestExchange = async (req, res) => {
   try {
     const id = req.user.id;
@@ -96,4 +108,5 @@ module.exports = {
   getAllRequestExchange,
   confirmExchange,
   getAllRequestPendingExchange,
+  getAllExchangeOther,
 };

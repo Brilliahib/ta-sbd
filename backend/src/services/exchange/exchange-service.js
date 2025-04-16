@@ -44,6 +44,44 @@ const getAllExchangeService = async (id) => {
   }
 };
 
+const getAllExchangeOtherService = async (id) => {
+  try {
+    const result = await prisma.exchange.findMany({
+      where: {
+        product: {
+          user_id: id,
+        },
+      },
+      select: {
+        id: true,
+        name_product: true,
+        image_url_product: true,
+        brand_product: true,
+        size_product: true,
+        condition: true,
+        is_accepted: true,
+        product: {
+          select: {
+            id: true,
+            name: true,
+            price: true,
+            image_url: true,
+            category: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    return result;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
 const getAllRequestExchangeService = async (id) => {
   try {
     const result = await prisma.exchange.findMany({
@@ -214,4 +252,5 @@ module.exports = {
   getAllRequestExchangeService,
   confirmExchangeService,
   getAllRequestPendingExchangeService,
+  getAllExchangeOtherService,
 };

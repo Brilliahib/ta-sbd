@@ -9,9 +9,12 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useApproveExchange } from "@/http/exchange/confirm-exchange";
 import { useGetDetailExchange } from "@/http/exchange/get-detail-exchange";
+import { useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { toast } from "sonner";
 
 interface DialogDetailExchangeProductProps {
   open: boolean;
@@ -25,13 +28,28 @@ export default function DialogDetailExchangeProduct({
   id,
 }: DialogDetailExchangeProductProps) {
   const session = useSession();
-  const { data } = useGetDetailExchange(
+  const { data, isPending } = useGetDetailExchange(
     {
       id,
       token: session.data?.access_token as string,
     },
     { enabled: session.status === "authenticated" },
   );
+
+  const queryClient = useQueryClient();
+
+  const { mutate: approveExchangeHandler, isPending: isConfirming } =
+    useApproveExchange({
+      onError: () => {
+        toast.error("Gagal mengonfirmasi penukaran produk!");
+      },
+      onSuccess: () => {
+        toast.success("Berhasil mengonfirmasi penukaran produk!");
+        queryClient.invalidateQueries({ queryKey: ["exchange-pending"] });
+        queryClient.invalidateQueries({ queryKey: ["exchange"] });
+        setOpen(false);
+      },
+    });
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-[700px]">
@@ -132,12 +150,18 @@ export default function DialogDetailExchangeProduct({
         <DialogFooter>
           <div className="flex w-full gap-2 md:w-fit">
             <Button
-              className="w-full border-input text-black md:w-fit"
-              variant={"outline"}
+              className="w-full md:w-fit"
+              disabled={isPending || isConfirming || !data?.data?.id}
+              onClick={() => {
+                if (!data?.data?.id) {
+                  toast.error("Data penukaran tidak ditemukan!");
+                  return;
+                }
+                approveExchangeHandler(data.data.id);
+              }}
             >
-              Tolak Penawaran
+              Terima Penawaran
             </Button>
-            <Button className="w-full md:w-fit">Terima Penawaran</Button>
           </div>
         </DialogFooter>
       </DialogContent>

@@ -12,6 +12,8 @@ router.use(authMiddleware);
 
 router.get("/", exchangeController.getAllExchange);
 
+router.get("/other", exchangeController.getAllExchangeOther);
+
 router.post(
   "/",
   upload.single("image_url_product"),

@@ -47,7 +47,7 @@ const SoftDeleteProductDialog = ({
             className={buttonVariants({ variant: "destructive" })}
             onClick={confirmDelete}
           >
-            Hapus
+            Hapus Sementara
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
