@@ -9,6 +9,8 @@ const router = express.Router();
 
 router.get("/", categoryProductController.getAllCategoryProduct);
 
+router.get("/:id", categoryProductController.getDetailCategoryProduct);
+
 router.post(
   "/",
   authMiddleware,

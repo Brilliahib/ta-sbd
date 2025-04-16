@@ -12,6 +12,27 @@ const getAllCategoryProduct = async (req, res) => {
   }
 };
 
+const getDetailCategoryProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = await categoryProductService.getDetailCategoryProductService(
+      id
+    );
+    if (!data) {
+      return res
+        .status(404)
+        .json(errorResponse(null, "Category product not found"));
+    }
+    return res
+      .status(200)
+      .json(
+        successResponse(data, "Category product detail retrieved successfully")
+      );
+  } catch (error) {
+    return res.status(500).json(errorResponse(error.message));
+  }
+};
+
 const createCategoryProduct = async (req, res) => {
   try {
     const categoryProductData = req.body;
@@ -63,4 +84,5 @@ module.exports = {
   deleteCategoryProduct,
   createCategoryProduct,
   updateCategoryProduct,
+  getDetailCategoryProduct,
 };

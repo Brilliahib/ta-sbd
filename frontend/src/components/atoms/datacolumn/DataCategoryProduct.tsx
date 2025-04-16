@@ -48,14 +48,7 @@ export const categoryProductColumns = (
       return (
         <div className="flex items-center gap-2">
           <Link
-            href={`/dashboard/admin/category/${data.id}`}
-            className="flex items-center text-gray-700 hover:underline"
-          >
-            <Eye className="h-4 w-4" />
-            <span className="ml-2">Detail</span>
-          </Link>
-          <Link
-            href={`/dashboard/admin/category/${data.id}/edit`}
+            href={`/dashboard/admin/category/edit/${data.id}`}
             className="flex items-center text-yellow-600 hover:text-yellow-800 hover:underline"
           >
             <SquarePen className="h-4 w-4" />

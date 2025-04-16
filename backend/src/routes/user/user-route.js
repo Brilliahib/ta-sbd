@@ -18,12 +18,7 @@ router.get(
   userController.getUserByEmail
 );
 
-router.get(
-  "/:id",
-  authMiddleware,
-  adminMiddleware,
-  userController.getDetailUser
-);
+router.get("/:id", userController.getDetailUser);
 
 router.get(
   "/:id/products",

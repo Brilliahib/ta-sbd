@@ -15,6 +15,19 @@ const getAllCategoryProductService = async () => {
   }
 };
 
+const getDetailCategoryProductService = async (id) => {
+  try {
+    const result = await prisma.productCategory.findUnique({
+      where: {
+        id,
+      },
+    });
+    return result;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
 const createCategoryProductService = async (data) => {
   try {
     const result = await prisma.productCategory.create({
@@ -63,4 +76,5 @@ module.exports = {
   createCategoryProductService,
   updateCategoryProductService,
   deleteCategoryProductService,
+  getDetailCategoryProductService,
 };

@@ -69,10 +69,10 @@ export default function FormEditProduct({
 
   const { mutate: editProductHandler, isPending } = useEditProduct({
     onError: () => {
-      toast.error("Gagal menambahkan produk baru!");
+      toast.error("Gagal memperbarui produk!");
     },
     onSuccess: async () => {
-      toast.success("Berhasil menambahkan produk baru!");
+      toast.success("Berhasil memperbarui produk!");
       return router.push("/dashboard/product");
     },
   });
