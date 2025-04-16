@@ -17,6 +17,7 @@ import Image from "next/image";
 import { id as idLocale } from "date-fns/locale";
 import { toast } from "sonner";
 import { useApproveOrder } from "@/http/purchases/confirm-order";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface DialogDetailSalesProductProps {
   open: boolean;
@@ -38,6 +39,8 @@ export default function DialogDetailSalesProduct({
     { enabled: session.status === "authenticated" },
   );
 
+  const queryClient = useQueryClient();
+
   const { mutate: approveOrderHandler, isPending: isConfirming } =
     useApproveOrder({
       onError: () => {
@@ -45,6 +48,8 @@ export default function DialogDetailSalesProduct({
       },
       onSuccess: () => {
         toast.success("Berhasil mengonfirmasi pembayaran!");
+        queryClient.invalidateQueries({ queryKey: ["history-order"] });
+        queryClient.invalidateQueries({ queryKey: ["request-purchase"] });
         setOpen(false);
       },
     });
