@@ -4,15 +4,15 @@ import { Product } from "@/types/product/product";
 import Image from "next/image";
 import { formatPrice } from "@/utils/format-price";
 
-interface CardDetailProductDashboardProps {
+interface CardDetailProductAdminProps {
   data?: Product;
   isLoading?: boolean;
 }
 
-export default function CardDetailProductDashboard({
+export default function CardDetailProductAdmin({
   data,
   isLoading,
-}: CardDetailProductDashboardProps) {
+}: CardDetailProductAdminProps) {
   return (
     <div className="flex flex-col gap-6 md:flex-row md:gap-8">
       {/* Image of product */}
@@ -52,6 +52,12 @@ export default function CardDetailProductDashboard({
                         Nama
                       </div>
                       <div className="md:w-8/12">{data!.name}</div>
+                    </div>
+                    <div className="flex flex-col gap-1 md:flex-row">
+                      <div className="text-muted-foreground md:w-4/12">
+                        Nama Pengguna
+                      </div>
+                      <div className="md:w-8/12">{data!.user.name}</div>
                     </div>
                     <div className="flex flex-col gap-1 md:flex-row">
                       <div className="text-muted-foreground md:w-4/12">

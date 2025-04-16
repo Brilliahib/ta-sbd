@@ -56,7 +56,7 @@ export function AppSidebar({ session }: AppsidebarProps) {
     {
       icon: <Users />,
       name: "Pengguna",
-      href: "/dashboard/users",
+      href: "/dashboard/admin/users",
     },
   ];
 

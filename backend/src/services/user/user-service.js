@@ -112,7 +112,6 @@ const getAllUsers = async () => {
         id: true,
         name: true,
         email: true,
-        username: true,
         phone: true,
         role: true,
         created_at: true,
